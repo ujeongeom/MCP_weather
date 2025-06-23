@@ -1,0 +1,7 @@
+mcp
+openai
+python-dotenv
+fastapi
+uvicorn[standard]
+jinja2
+requests 
