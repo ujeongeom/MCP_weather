@@ -83,17 +83,17 @@ mcp_servers.json 구현:
 
 - [중요] command 배열의 weather_server.py 경로는 사용자가 직접 자신의 환경에 맞는 절대 경로로 수정해야 한다는 점을 주석이나 문서로 명시해야 합니다.
 
-    {
-      "mcpServers": {
-        "weather": {
-          "transport": "stdio",
-          "command": [
-            "python",
-            "/path/to/your/project/weather_server.py" 
-          ]
+        {
+          "mcpServers": {
+            "weather": {
+              "transport": "stdio",
+              "command": [
+                "python",
+                "/path/to/your/project/weather_server.py" 
+              ]
+            }
+          }
         }
-      }
-    }
 
 #### 3단계: 핵심 AI 에이전트 구현 (2개 파일)
 
