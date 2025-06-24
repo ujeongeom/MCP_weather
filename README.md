@@ -1,8 +1,8 @@
-프로젝트 목표:
+### 프로젝트 목표:
 
 FastAPI와 웹소켓을 기반으로 한 AI 채팅 웹 애플리케이션을 구축합니다. 이 AI 에이전트는 사용자의 설정에 따라 Azure OpenAI 또는 표준 OpenAI API를 선택적으로 사용할 수 있어야 합니다. 또한, MCP(Model Context Protocol) 클라이언트로서 외부 도구 서버와 동적으로 연동하여 기능을 확장할 수 있어야 합니다.
 
-핵심 요구사항:
+### 핵심 요구사항:
 
 에이전트 전환 기능: .env 파일의 AGENT_TYPE 설정에 따라 Azure/표준 OpenAI 에이전트가 동적으로 선택되어야 합니다.
 
@@ -12,7 +12,7 @@ FastAPI와 웹소켓을 기반으로 한 AI 채팅 웹 애플리케이션을 구
 
 안정성: Python 가상 환경(venv)을 사용하고, 모든 I/O는 비동기(async/await)로 처리하며, 발생 가능한 오류를 명확히 처리해야 합니다.
 
-기술 스택:
+### 기술 스택:
 
 - Python 3.10+
 
@@ -26,50 +26,50 @@ FastAPI와 웹소켓을 기반으로 한 AI 채팅 웹 애플리케이션을 구
 
 - requests
 
-단계별 구현 지침:
+### 단계별 구현 지침:
 
-1단계: 프로젝트 구조 및 환경 설정
+#### 1단계: 프로젝트 구조 및 환경 설정
 
 다음과 같은 파일 구조로 프로젝트를 생성해주세요.
 
-/
-├── .env
-├── mcp_servers.json
-├── openai_mcp_agent.py
-├── openai_mcp_agent_standard.py
-├── web_server.py
-├── weather_server.py
-├── requirements.txt
-└── static/
-    ├── index.html
-    └── script.js
+    /
+    ├── .env
+    ├── mcp_servers.json
+    ├── openai_mcp_agent.py
+    ├── openai_mcp_agent_standard.py
+    ├── web_server.py
+    ├── weather_server.py
+    ├── requirements.txt
+    └── static/
+        ├── index.html
+        └── script.js
 
 requirements.txt 생성: 아래 내용으로 파일을 생성해주세요.
 
-mcp
-openai
-python-dotenv
-fastapi
-uvicorn[standard]
-jinja2
-requests
+    mcp
+    openai
+    python-dotenv
+    fastapi
+    uvicorn[standard]
+    jinja2
+    requests
 
 .env 파일 생성: 아래 내용으로 파일을 생성해주세요. 사용자가 자신의 키를 입력하고 에이전트 타입을 선택할 수 있도록 주석을 포함해주세요.
 
-# Agent Type: 'AZURE' 또는 'STANDARD' 중 하나를 선택합니다.
-AGENT_TYPE="AZURE"
-# --- AZURE 타입 선택 시 필요한 정보 ---
-AZURE_OPENAI_API_KEY="YOUR_AZURE_OPENAI_API_KEY"
-AZURE_OPENAI_ENDPOINT="YOUR_AZURE_OPENAI_ENDPOINT"
-AZURE_OPENAI_API_VERSION="2024-02-01"
-AZURE_OPENAI_DEPLOYMENT_NAME="gpt-4o"
-# --- STANDARD 타입 선택 시 필요한 정보 ---
-OPENAI_API_KEY="YOUR_STANDARD_OPENAI_API_KEY"
-OPENAI_MODEL_NAME="gpt-4o"
-# --- MCP 서버(weather_server)에서 사용하는 API 키 ---
-WEATHER_API_KEY="YOUR_OPENWEATHERMAP_API_KEY"
+    # Agent Type: 'AZURE' 또는 'STANDARD' 중 하나를 선택합니다.
+    AGENT_TYPE="AZURE"
+    # --- AZURE 타입 선택 시 필요한 정보 ---
+    AZURE_OPENAI_API_KEY="YOUR_AZURE_OPENAI_API_KEY"
+    AZURE_OPENAI_ENDPOINT="YOUR_AZURE_OPENAI_ENDPOINT"
+    AZURE_OPENAI_API_VERSION="2024-02-01"
+    AZURE_OPENAI_DEPLOYMENT_NAME="gpt-4o"
+    # --- STANDARD 타입 선택 시 필요한 정보 ---
+    OPENAI_API_KEY="YOUR_STANDARD_OPENAI_API_KEY"
+    OPENAI_MODEL_NAME="gpt-4o"
+    # --- MCP 서버(weather_server)에서 사용하는 API 키 ---
+    WEATHER_API_KEY="YOUR_OPENWEATHERMAP_API_KEY"
 
-2단계: MCP 서버 구현 (weather_server.py 및 mcp_servers.json)
+#### 2단계: MCP 서버 구현 (weather_server.py 및 mcp_servers.json)
 
 weather_server.py 구현:
 
@@ -83,19 +83,19 @@ weather_server.py를 실행하기 위한 설정 파일을 생성합니다.
 
 [중요] command 배열의 weather_server.py 경로는 사용자가 직접 자신의 환경에 맞는 절대 경로로 수정해야 한다는 점을 주석이나 문서로 명시해야 합니다.
 
-{
-  "mcpServers": {
-    "weather": {
-      "transport": "stdio",
-      "command": [
-        "python",
-        "/path/to/your/project/weather_server.py" 
-      ]
+    {
+      "mcpServers": {
+        "weather": {
+          "transport": "stdio",
+          "command": [
+            "python",
+            "/path/to/your/project/weather_server.py" 
+          ]
+        }
+      }
     }
-  }
-}
 
-3단계: 핵심 AI 에이전트 구현 (2개 파일)
+#### 3단계: 핵심 AI 에이전트 구현 (2개 파일)
 
 두 에이전트 파일의 _execute_tool_call 함수 구현이 가장 중요합니다.
 
@@ -117,7 +117,7 @@ __init__에서 표준 OpenAI 설정(api_key)을 받습니다.
 
 _execute_tool_call 함수는 위 [핵심 구현] 지침을 따라야 합니다.
 
-4단계: 웹 서버 및 UI 구현
+#### 4단계: 웹 서버 및 UI 구현
 
 web_server.py 구현:
 
@@ -135,24 +135,24 @@ static/index.html 및 static/script.js 구현:
 
 script.js는 페이지 로드 시 /api/servers, /api/tools API를 호출하여 사이드바 정보를 채우고, 웹소켓을 통해 서버와 채팅 메시지를 교환하는 로직을 구현합니다.
 
-5단계: 최종 문서화
+#### 5단계: 최종 문서화
 
 프로젝트의 목적, 기능, 구조, 그리고 위에서 설명한 모든 설치 및 실행 방법을 포함하는 상세한 Readme.md 파일을 생성해주세요. 특히 .env 파일 설정법과 mcp_servers.json의 절대 경로 설정 부분을 명확히 설명해야 합니다.
 
 프로젝트 구조 예시 (클라이언트 포함):
 
-/
-├── .env
-├── mcp_servers.json
-├── openai_mcp_agent.py
-├── openai_mcp_agent_standard.py
-├── web_server.py
-├── weather_server.py
-├── requirements.txt
-├── static/
-│   ├── index.html
-│   └── script.js
-└── mcp_client/   # ← 새로 추가될 MCP 클라이언트 폴더
-    ├── mcp_config.json
-    ├── langchain_client.py
-    └── README.md
+    /
+    ├── .env
+    ├── mcp_servers.json
+    ├── openai_mcp_agent.py
+    ├── openai_mcp_agent_standard.py
+    ├── web_server.py
+    ├── weather_server.py
+    ├── requirements.txt
+    ├── static/
+    │   ├── index.html
+    │   └── script.js
+    └── mcp_client/   # ← 새로 추가될 MCP 클라이언트 폴더
+        ├── mcp_config.json
+        ├── langchain_client.py
+        └── README.md
