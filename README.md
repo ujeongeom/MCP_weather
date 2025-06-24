@@ -73,15 +73,15 @@ requirements.txt 생성: 아래 내용으로 파일을 생성해주세요.
 
 weather_server.py 구현:
 
-OpenWeatherMap의 현재 날씨 API (/weather 엔드포인트)를 호출하는 get_forecast 도구를 제공하는 MCP 서버를 구현합니다.
+- OpenWeatherMap의 현재 날씨 API (/weather 엔드포인트)를 호출하는 get_forecast 도구를 제공하는 MCP 서버를 구현합니다.
 
-[중요] call_tool 함수는 API 호출 결과를 json.dumps()로 문자열화 한 뒤, 반드시 [TextContent(text=...)] 형태로 리스트에 감싸서 반환해야 합니다. API 호출 실패 시에도 오류 메시지를 TextContent로 감싸서 반환해야 합니다.
+- [중요] call_tool 함수는 API 호출 결과를 json.dumps()로 문자열화 한 뒤, 반드시 [TextContent(text=...)] 형태로 리스트에 감싸서 반환해야 합니다. API 호출 실패 시에도 오류 메시지를 TextContent로 감싸서 반환해야 합니다.
 
 mcp_servers.json 구현:
 
-weather_server.py를 실행하기 위한 설정 파일을 생성합니다.
+- weather_server.py를 실행하기 위한 설정 파일을 생성합니다.
 
-[중요] command 배열의 weather_server.py 경로는 사용자가 직접 자신의 환경에 맞는 절대 경로로 수정해야 한다는 점을 주석이나 문서로 명시해야 합니다.
+- [중요] command 배열의 weather_server.py 경로는 사용자가 직접 자신의 환경에 맞는 절대 경로로 수정해야 한다는 점을 주석이나 문서로 명시해야 합니다.
 
     {
       "mcpServers": {
@@ -103,37 +103,37 @@ weather_server.py를 실행하기 위한 설정 파일을 생성합니다.
 
 openai_mcp_agent.py (Azure용):
 
-AsyncAzureOpenAI 클라이언트를 사용합니다.
+- AsyncAzureOpenAI 클라이언트를 사용합니다.
 
-__init__에서 Azure 관련 설정(api_key, azure_endpoint, api_version)을 받습니다.
+- __init__에서 Azure 관련 설정(api_key, azure_endpoint, api_version)을 받습니다.
 
-_execute_tool_call 함수는 위 [핵심 구현] 지침을 따라야 합니다.
+- _execute_tool_call 함수는 위 [핵심 구현] 지침을 따라야 합니다.
 
 openai_mcp_agent_standard.py (표준 OpenAI용):
 
-AsyncOpenAI 클라이언트를 사용합니다.
+- AsyncOpenAI 클라이언트를 사용합니다.
 
-__init__에서 표준 OpenAI 설정(api_key)을 받습니다.
+- __init__에서 표준 OpenAI 설정(api_key)을 받습니다.
 
-_execute_tool_call 함수는 위 [핵심 구현] 지침을 따라야 합니다.
+- _execute_tool_call 함수는 위 [핵심 구현] 지침을 따라야 합니다.
 
 #### 4단계: 웹 서버 및 UI 구현
 
 web_server.py 구현:
 
-FastAPI의 lifespan 컨텍스트 관리자를 사용하여 서버 시작/종료 로직을 관리합니다.
+- FastAPI의 lifespan 컨텍스트 관리자를 사용하여 서버 시작/종료 로직을 관리합니다.
 
-[중요] lifespan 함수 내에서 .env의 AGENT_TYPE 값을 읽어, 해당 값에 따라 OpenAIMCPAgent 또는 OpenaiMcpAgentStandard를 조건부로 임포트하고 초기화합니다. 에이전트 인스턴스는 app.state.agent에 저장합니다.
+- [중요] lifespan 함수 내에서 .env의 AGENT_TYPE 값을 읽어, 해당 값에 따라 OpenAIMCPAgent 또는 OpenaiMcpAgentStandard를 조건부로 임포트하고 초기화합니다. 에이전트 인스턴스는 app.state.agent에 저장합니다.
 
-/ws 경로에 웹소켓 엔드포인트를 구현하여 실시간 채팅을 처리합니다.
+- /ws 경로에 웹소켓 엔드포인트를 구현하여 실시간 채팅을 처리합니다.
 
-/api/servers와 /api/tools 엔드포인트를 구현하여 연결된 서버와 도구 목록을 JSON으로 반환합니다.
+- /api/servers와 /api/tools 엔드포인트를 구현하여 연결된 서버와 도구 목록을 JSON으로 반환합니다.
 
 static/index.html 및 static/script.js 구현:
 
-채팅 UI와 서버/도구 목록을 표시할 사이드바를 포함하는 간단한 HTML을 작성합니다.
+- 채팅 UI와 서버/도구 목록을 표시할 사이드바를 포함하는 간단한 HTML을 작성합니다.
 
-script.js는 페이지 로드 시 /api/servers, /api/tools API를 호출하여 사이드바 정보를 채우고, 웹소켓을 통해 서버와 채팅 메시지를 교환하는 로직을 구현합니다.
+- script.js는 페이지 로드 시 /api/servers, /api/tools API를 호출하여 사이드바 정보를 채우고, 웹소켓을 통해 서버와 채팅 메시지를 교환하는 로직을 구현합니다.
 
 #### 5단계: 최종 문서화
 
